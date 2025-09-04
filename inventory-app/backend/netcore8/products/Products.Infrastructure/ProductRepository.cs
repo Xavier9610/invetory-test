@@ -4,7 +4,7 @@ using Microsoft.Data.SqlClient;
 using Products.Application.Dtos;
 
 namespace Products.Infrastructure;
-
+//service
 public sealed class ProductRepository : IProductRepository
 {
     private readonly ISqlConnectionFactory _factory;

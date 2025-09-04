@@ -28,13 +28,13 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-// Usa CORS antes de mapear endpoints
+// Usa t
 app.UseCors("dev");
 
 // Health
 app.MapGet("/", () => Results.Ok("Products.Api up"));
 
-// Group routes
+// Group routes products
 var group = app.MapGroup("/api/products");
 
 

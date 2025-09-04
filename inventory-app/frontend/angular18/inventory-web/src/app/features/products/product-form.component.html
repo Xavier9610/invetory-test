@@ -79,9 +79,27 @@
       </div>
     </div>
 
+    <!-- Filtros por fecha -->
+    <div class="card-body">
+      <form class="tx-filters" [formGroup]="trxFilters" (ngSubmit)="applyTrxFilters()">
+        <label class="control">
+          <span class="label">Desde</span>
+          <input type="date" formControlName="start" />
+        </label>
+        <label class="control">
+          <span class="label">Hasta</span>
+          <input type="date" formControlName="end" />
+        </label>
+        <div class="actions">
+          <button class="btn" type="submit">Aplicar</button>
+          <button class="btn ghost" type="button" (click)="clearTrxFilters()">Limpiar</button>
+        </div>
+      </form>
+    </div>
+
     <!-- Inline transaction form -->
-    <div class="card-body" *ngIf="showTrxForm()">
-      <form class="tx-form" [formGroup]="trxForm">
+    <div class="card-body" *ngIf="showTrxForm()" [formGroup]="trxForm">
+      <form class="tx-form">
         <div class="row">
           <label class="control">
             <span class="label">Type</span>

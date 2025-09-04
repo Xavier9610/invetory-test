@@ -147,3 +147,14 @@ input::placeholder, textarea::placeholder { color: #9ca3af; }
   .tx-form .row { grid-template-columns: 1fr; }
   .truncate { max-width: 180px; }
 }
+
+
+.tx-filters {
+  display: flex;
+  gap: .75rem;
+  align-items: end;
+  flex-wrap: wrap;
+}
+.tx-filters .control { min-width: 200px; }
+.tx-filters .actions { margin-left: auto; display: flex; gap: .5rem; }
+.btn.ghost { background: #fff; border-color: #e5e7eb; }

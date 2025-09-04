@@ -2,11 +2,13 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+
 import { ProductService } from '../../core/services/product.service';
-import { ProductCreateDto, ProductUpdateDto, ProductReadDto } from '../../core/models/product.model';
+import { ProductCreateDto, ProductReadDto, ProductUpdateDto } from '../../core/models/product.model';
 
 import { TransactionService } from '../../core/services/transaction.service';
 import { TransactionReadDto } from '../../core/models/transaction.model';
+
 import { PaginatorComponent } from '../../shared/paginator/paginator.component';
 
 @Component({
@@ -33,7 +35,7 @@ export class ProductFormComponent implements OnInit {
 
   product: ProductReadDto | null = null;
 
-  // ---- Transactions (history) ----
+  // Historial
   trxLoading = signal(false);
   trxError = signal<string | null>(null);
   trxItems = signal<TransactionReadDto[]>([]);
@@ -41,12 +43,16 @@ export class ProductFormComponent implements OnInit {
   trxPage = signal(1);
   trxPageSize = signal(10);
 
-  // ---- Transaction inline form ----
+  // Filtros por fecha del historial
+  trxFilters!: FormGroup; // { start: 'yyyy-MM-dd' | '', end: 'yyyy-MM-dd' | '' }
+
+  // Form inline de transacción (Purchase/Sell)
   showTrxForm = signal(false);
   trxTypeId = signal<1 | 2>(1); // 1=Purchase, 2=Sale
   trxForm!: FormGroup;
 
   ngOnInit(): void {
+    // Form de producto
     this.form = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(200)]],
       description: [''],
@@ -56,10 +62,17 @@ export class ProductFormComponent implements OnInit {
       initialStock: [0, [Validators.min(0)]]
     });
 
+    // Form de transacción
     this.trxForm = this.fb.group({
       quantity: [1, [Validators.required, Validators.min(1)]],
       unitPrice: [0, [Validators.required, Validators.min(0)]],
       detail: ['']
+    });
+
+    // Form de filtros (fechas)
+    this.trxFilters = this.fb.group({
+      start: [''],
+      end: ['']
     });
 
     const idParam = this.route.snapshot.paramMap.get('id');
@@ -67,13 +80,13 @@ export class ProductFormComponent implements OnInit {
 
     if (this.isEdit) {
       this.id = Number(idParam);
-      this.form.get('initialStock')?.disable(); // no se edita el stock inicial
+      this.form.get('initialStock')?.disable();
       this.loadProduct();
       this.loadTransactions();
     }
   }
 
-  // -------- Products --------
+  // ---------- Producto ----------
   loadProduct() {
     if (!this.id) return;
     this.loading.set(true); this.error.set(null);
@@ -106,7 +119,7 @@ export class ProductFormComponent implements OnInit {
         isActive: this.form.value.isActive
       };
       this.products.update(this.id, body).subscribe({
-        next: () => { this.success.set('Product updated'); this.loading.set(false); this.loadProduct(); }, // quedarse en la página
+        next: () => { this.success.set('Product updated'); this.loading.set(false); this.loadProduct(); },
         error: err => { this.error.set(err?.error?.error ?? 'Update failed'); this.loading.set(false); }
       });
     } else {
@@ -124,11 +137,16 @@ export class ProductFormComponent implements OnInit {
     }
   }
 
-  // -------- Transactions (history + create) --------
+  // ---------- Historial ----------
   loadTransactions(page = this.trxPage(), pageSize = this.trxPageSize()) {
     if (!this.id) return;
     this.trxLoading.set(true); this.trxError.set(null);
-    this.tx.search({ productId: this.id, page, pageSize }).subscribe({
+
+    const { start, end } = this.trxFilters.value as { start?: string; end?: string };
+    const startUtc = start ? this.toUtcStart(start) : undefined;
+    const endUtc   = end   ? this.toUtcEnd(end)   : undefined;
+
+    this.tx.search({ productId: this.id, page, pageSize, startUtc, endUtc }).subscribe({
       next: res => {
         this.trxItems.set(res.items);
         this.trxTotal.set(res.total);
@@ -140,6 +158,25 @@ export class ProductFormComponent implements OnInit {
     });
   }
 
+  applyTrxFilters() {
+    const { start, end } = this.trxFilters.value as { start?: string; end?: string };
+    if (start && end && new Date(start) > new Date(end)) {
+      this.trxError.set('La fecha "Hasta" debe ser posterior a "Desde".');
+      return;
+    }
+    this.trxError.set(null);
+    this.trxPage.set(1);
+    this.loadTransactions(1, this.trxPageSize());
+  }
+
+  clearTrxFilters() {
+    this.trxFilters.reset({ start: '', end: '' });
+    this.applyTrxFilters();
+  }
+
+  changeTrxPage(p: number) { this.loadTransactions(p, this.trxPageSize()); }
+
+  // ---------- Purchase / Sell ----------
   openTrxForm(type: 1 | 2) {
     this.trxTypeId.set(type);
     this.trxForm.reset({ quantity: 1, unitPrice: this.form.value.price ?? 0, detail: '' });
@@ -165,8 +202,8 @@ export class ProductFormComponent implements OnInit {
       next: _ => {
         this.showTrxForm.set(false);
         this.trxLoading.set(false);
-        this.loadTransactions(1, this.trxPageSize()); // recargar desde página 1
-        this.loadProduct();                            // refrescar stock/price
+        this.loadTransactions(1, this.trxPageSize()); // recarga historial
+        this.loadProduct();                            // refresca stock
         this.success.set(this.trxTypeId() === 1 ? 'Purchase created' : 'Sale created');
       },
       error: err => {
@@ -176,5 +213,11 @@ export class ProductFormComponent implements OnInit {
     });
   }
 
-  changeTrxPage(p: number) { this.loadTransactions(p, this.trxPageSize()); }
+  // Helpers: local date (yyyy-MM-dd) -> UTC ISO
+  private toUtcStart(dateYmd: string): string {
+    return new Date(`${dateYmd}T00:00:00`).toISOString();
+  }
+  private toUtcEnd(dateYmd: string): string {
+    return new Date(`${dateYmd}T23:59:59.999`).toISOString();
+  }
 }

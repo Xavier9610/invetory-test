@@ -2,7 +2,7 @@
 
 public sealed class Product
 {
-    // Domain entity (kept minimal, DB is source of truth for stock/price rules)
+    //DB Model
     public int ProductId { get; set; }
     public string Name { get; set; } = default!;
     public string? Description { get; set; }
