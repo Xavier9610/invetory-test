@@ -66,13 +66,19 @@ npm start
 <img width="1072" height="531" alt="image" src="https://github.com/user-attachments/assets/50c1bfac-ad81-417c-ab1b-cf1e7541ac19" />
 
 ## • Pantalla para la creación de productos.
+<img width="1072" height="586" alt="image" src="https://github.com/user-attachments/assets/f198b416-81aa-4dd1-999c-ba4ac6fac049" />
 
 ## • Pantalla para la edición de productos.
+<img width="1072" height="586" alt="image" src="https://github.com/user-attachments/assets/b42d81b6-8823-4dae-aa94-401e0105e475" />
 
 ## • Pantalla para la creación de transacciones.
+<img width="1024" height="234" alt="image" src="https://github.com/user-attachments/assets/c4916025-397f-442a-95ae-7bd7da04567d" />
 
 ## • Pantalla para la edición de transacciones.
+<img width="1024" height="234" alt="image" src="https://github.com/user-attachments/assets/f74362a1-ca03-4237-a8f0-499c7379dbbc" />
 
 ## • Pantalla de filtros dinámicos.
+<img width="1051" height="355" alt="image" src="https://github.com/user-attachments/assets/60f0008a-923c-499d-96e2-7c5b41604e6d" />
 
-## • Pantalla para la consulta de información de un formulario (extra).
+<img width="1013" height="311" alt="image" src="https://github.com/user-attachments/assets/33173918-8a7f-413a-b1a1-d9fcf8f3d30e" />
+
