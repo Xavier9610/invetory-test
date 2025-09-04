@@ -1,0 +1,75 @@
+<div class="page">
+  <header class="header">
+    <h1>Products</h1>
+    <a routerLink="/products/new" class="btn">+ New</a>
+  </header>
+
+  <section class="filters">
+  <input
+    type="text"
+    placeholder="Search by name..."
+    [ngModel]="q()"
+    (ngModelChange)="onSearchChange($event)"
+  />
+
+  <div class="select">
+    <select
+      [ngModel]="onlyActive()"
+      (ngModelChange)="onActiveChange($event)"
+    >
+      <option value="all">All</option>
+      <option value="active">Active</option>
+      <option value="inactive">Inactive</option>
+    </select>
+  </div>
+</section>
+
+
+  <div class="alerts" *ngIf="error() || success()">
+    <div class="alert error" *ngIf="error()">{{error()}}</div>
+    <div class="alert success" *ngIf="success()">{{success()}}</div>
+  </div>
+
+  <div *ngIf="loading()">Loading...</div>
+
+  <ng-container *ngIf="!loading()">
+    <table class="table" *ngIf="filtered().length > 0; else emptyState">
+      <thead>
+        <tr>
+          <th style="width:80px;">ID</th>
+          <th>Name</th>
+          <th style="width:120px;">Price</th>
+          <th style="width:100px;">Stock</th>
+          <th style="width:90px;">Active</th>
+          <th style="width:200px;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of paged(); trackBy: trackById">
+          <td>{{p.productId}}</td>
+          <td>{{p.name}}</td>
+          <td>{{p.price | number:'1.2-2'}}</td>
+          <td>{{p.stock}}</td>
+          <td>
+            <span class="dot" [class.ok]="!!p.isActive" [title]="p.isActive ? 'Active' : 'Inactive'"></span>
+          </td>
+          <td class="actions">
+            <a class="btn" [routerLink]="['/products', p.productId, 'edit']">Edit</a>
+            <button class="btn danger" (click)="confirmDelete(p.productId)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <ng-template #emptyState>
+      <div class="empty">No results</div>
+    </ng-template>
+
+    <app-paginator
+      [total]="filtered().length"
+      [page]="page()"
+      [pageSize]="pageSize()"
+      (pageChange)="changePage($event)">
+    </app-paginator>
+  </ng-container>
+</div>

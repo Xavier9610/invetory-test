@@ -1,0 +1,68 @@
+.page { padding: 1rem; }
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.filters { display: flex; gap: .75rem; margin-bottom: 1rem; }
+.alerts { margin-bottom: .75rem; }
+.alert { padding: .5rem .75rem; border-radius: 6px; }
+.alert.error { background: #fde2e1; color: #7a1d18; }
+.alert.success { background: #e6f7e9; color: #1c6d2a; }
+.table { width: 100%; border-collapse: collapse; }
+.table th, .table td { border-bottom: 1px solid #eee; padding: .5rem .35rem; text-align: left; }
+.btn { display: inline-block; padding: .35rem .65rem; border-radius: 6px; border: 1px solid #ccc; background: #fff; text-decoration: none; cursor: pointer; }
+.btn.danger { border-color: #e26b6b; color: #b22; }
+.actions { display: flex; gap: .5rem; }
+.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; background: #aaa; }
+.dot.ok { background: #2ecc71; }
+.empty { padding: 1rem; color: #666; text-align: center; }
+:host {
+  --border: #e5e7eb;
+  --ring: rgba(37, 99, 235, .25);
+}
+
+.filters {
+  display: flex;
+  gap: .75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.filters input,
+.filters select {
+  font: inherit;
+  height: 38px;
+  padding: .45rem .65rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  outline: none;
+  transition: box-shadow .15s ease, border-color .15s ease;
+}
+
+.filters input:focus,
+.filters select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px var(--ring);
+}
+
+/* Wrapper del select con flecha consistente */
+.select {
+  position: relative;
+  display: inline-block;
+}
+.select select {
+  appearance: none;          /* estandar */
+  -webkit-appearance: none;  /* Safari/Chrome */
+  -moz-appearance: none;     /* Firefox */
+  padding-right: 2rem;       /* espacio para la flecha */
+}
+.select::after {
+  content: "";
+  position: absolute;
+  right: .6rem;
+  top: 50%;
+  width: 0; height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid #6b7280; /* caret */
+  transform: translateY(-25%);
+  pointer-events: none;
+}

@@ -1,0 +1,169 @@
+<div class="page">
+  <header class="header">
+    <h1 class="title">
+      <span class="title-main">{{ isEdit ? 'Edit Product' : 'New Product' }}</span>
+      <span *ngIf="product" class="badge">ID: {{product.productId}}</span>
+      <span *ngIf="product" class="badge stock">Stock: {{product.stock}}</span>
+    </h1>
+    <a routerLink="/products" class="btn ghost">← Back</a>
+  </header>
+
+  <div class="alerts" *ngIf="error() || success()">
+    <div class="alert error" *ngIf="error()">{{error()}}</div>
+    <div class="alert success" *ngIf="success()">{{success()}}</div>
+  </div>
+
+  <!-- Product card -->
+  <section class="card">
+    <div class="card-header">Product details</div>
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="card-body">
+      <div class="grid">
+        <label class="control">
+          <span class="label">Name *</span>
+          <input type="text" formControlName="name" maxlength="200" />
+          <small class="hint" *ngIf="form.get('name')?.invalid && form.get('name')?.touched">
+            Name is required (max 200).
+          </small>
+        </label>
+
+        <label class="control">
+          <span class="label">Price *</span>
+          <input type="number" formControlName="price" step="0.01" min="0" />
+          <small class="hint" *ngIf="form.get('price')?.invalid && form.get('price')?.touched">
+            Must be ≥ 0.
+          </small>
+        </label>
+
+        <label class="control" *ngIf="!isEdit">
+          <span class="label">Initial Stock</span>
+          <input type="number" formControlName="initialStock" min="0" />
+        </label>
+
+        <label class="control full">
+          <span class="label">Description</span>
+          <textarea formControlName="description" rows="3"></textarea>
+        </label>
+
+        <label class="control full">
+          <span class="label">Image URL</span>
+          <input type="url" formControlName="imageUrl" placeholder="https://..." />
+        </label>
+
+        <label class="control switch" *ngIf="isEdit">
+          <span class="label">Active</span>
+          <label class="toggle">
+            <input type="checkbox" formControlName="isActive" />
+            <span class="slider"></span>
+          </label>
+        </label>
+      </div>
+
+      <div class="actions">
+        <button class="btn primary" type="submit">
+          {{ isEdit ? 'Save changes' : 'Create product' }}
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Transactions (only on edit) -->
+  <section *ngIf="isEdit" class="card">
+    <div class="card-header tx-head">
+      <div class="tx-title">
+        <h2>Transaction history</h2>
+        <small *ngIf="product" class="muted">Current stock: {{product.stock}}</small>
+      </div>
+      <div class="tx-actions">
+        <button class="btn" (click)="openTrxForm(1)">Purchase</button>
+        <button class="btn warn" (click)="openTrxForm(2)">Sell</button>
+      </div>
+    </div>
+
+    <!-- Inline transaction form -->
+    <div class="card-body" *ngIf="showTrxForm()">
+      <form class="tx-form" [formGroup]="trxForm">
+        <div class="row">
+          <label class="control">
+            <span class="label">Type</span>
+            <input type="text" [value]="trxTypeId() === 1 ? 'Purchase' : 'Sell'" disabled />
+          </label>
+
+          <label class="control">
+            <span class="label">Quantity *</span>
+            <input type="number" formControlName="quantity" min="1" />
+            <small class="hint" *ngIf="trxForm.get('quantity')?.invalid && trxForm.get('quantity')?.touched">
+              Must be ≥ 1.
+            </small>
+          </label>
+
+          <label class="control">
+            <span class="label">Unit Price *</span>
+            <input type="number" formControlName="unitPrice" step="0.01" min="0" />
+            <small class="hint" *ngIf="trxForm.get('unitPrice')?.invalid && trxForm.get('unitPrice')?.touched">
+              Must be ≥ 0.
+            </small>
+          </label>
+        </div>
+
+        <label class="control full">
+          <span class="label">Detail</span>
+          <input type="text" formControlName="detail" placeholder="Optional note..." />
+        </label>
+
+        <div class="actions">
+          <button class="btn success" type="button" (click)="submitTrx()">Submit</button>
+          <button class="btn danger" type="button" (click)="cancelTrx()">Cancel</button>
+        </div>
+
+        <div class="alerts" *ngIf="trxError()">
+          <div class="alert error">{{trxError()}}</div>
+        </div>
+      </form>
+    </div>
+
+    <div class="card-body" *ngIf="trxLoading()">Loading history...</div>
+
+    <div class="card-body" *ngIf="!trxLoading()">
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Type</th>
+              <th class="num">Qty</th>
+              <th class="num">Unit Price</th>
+              <th class="num">Total</th>
+              <th>Detail</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let t of trxItems()">
+              <td>{{ t.occurredAt | date:'short' }}</td>
+              <td>
+                <span class="chip" [class.chip-buy]="t.transactionTypeId === 1" [class.chip-sell]="t.transactionTypeId === 2">
+                  {{ t.transactionType }}
+                </span>
+              </td>
+              <td class="num">{{ t.quantity }}</td>
+              <td class="num">{{ t.unitPrice | number:'1.2-2' }}</td>
+              <td class="num">{{ t.totalPrice | number:'1.2-2' }}</td>
+              <td class="truncate" title="{{t.detail}}">{{ t.detail }}</td>
+            </tr>
+            <tr *ngIf="trxItems().length === 0">
+              <td colspan="6" class="empty">No transactions yet</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pager">
+        <app-paginator
+          [total]="trxTotal()"
+          [page]="trxPage()"
+          [pageSize]="trxPageSize()"
+          (pageChange)="changeTrxPage($event)">
+        </app-paginator>
+      </div>
+    </div>
+  </section>
+</div>
