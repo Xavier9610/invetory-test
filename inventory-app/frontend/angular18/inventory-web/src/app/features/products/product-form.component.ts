@@ -41,7 +41,7 @@ export class ProductFormComponent implements OnInit {
   trxItems = signal<TransactionReadDto[]>([]);
   trxTotal = signal(0);
   trxPage = signal(1);
-  trxPageSize = signal(10);
+  trxPageSize = signal(3);
 
   // Filtros por fecha del historial
   trxFilters!: FormGroup; // { start: 'yyyy-MM-dd' | '', end: 'yyyy-MM-dd' | '' }

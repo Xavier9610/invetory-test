@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
 })
 export class PaginatorComponent {
   @Input() total = 0;
-  @Input() pageSize = 10;
+  @Input() pageSize = 3;
   @Input() page = 1; // 1-based
   @Output() pageChange = new EventEmitter<number>();
 

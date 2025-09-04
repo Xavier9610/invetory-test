@@ -24,7 +24,7 @@ export class ProductsListComponent implements OnInit {
   q = signal<string>('');                         // texto de búsqueda
   onlyActive = signal<ActiveFilter>('all');       // filtro de estado
   page = signal(1);
-  pageSize = signal(10);
+  pageSize = signal(3);
 
   // Filtrado robusto (tolera isActive undefined y name null)
   filtered = computed(() => {
