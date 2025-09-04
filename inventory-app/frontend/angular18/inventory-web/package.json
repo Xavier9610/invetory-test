@@ -1,0 +1,7 @@
+{
+  "scripts": {
+    "build": "ng build --configuration=production",
+    "start": "ng serve",
+    "test": "ng test"
+  }
+}
