@@ -33,7 +33,7 @@ dotnet build
 
 ## Ejecución de la aplicación (backend)
 
-# 1 Backend – Microservicios
+## Backend – Microservicios
 
 ### Products Service (puerto 5000)
 ```bash
@@ -48,8 +48,6 @@ dotnet run --project backend/netcore8/transactions/Transactions.Api --urls http:
 
 ```
 ## Ejecución de frontend
-
-### 1 Backend – Microservicios
 
 ### Products Service (puerto 5000)
 ```bash
