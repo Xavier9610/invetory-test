@@ -17,7 +17,49 @@ Sistema de gestión de inventarios desarrollado con arquitectura de microservici
 ```bash
 git clone https://github.com/<tu-usuario>/<tu-repo>.git
 cd <tu-repo>   # p.ej. inventory-app
+```
 
+### 2) Levantar base de datos con Docker
+```bash
+docker compose up -d sqlserver db-init
+
+```
+### 3) Limpiar y compilar la solución (backend)
+```bash
+dotnet clean
+dotnet build
+
+```
+
+## Ejecución de la aplicación (backend)
+
+# 1 Backend – Microservicios
+
+# Products Service (puerto 5000)
+```bash
+dotnet run --project backend/netcore8/products/Products.Api --urls http://localhost:5000
+
+
+```
+# Transaction Service (puerto 5000)
+```bash
+dotnet run --project backend/netcore8/transactions/Transactions.Api --urls http://localhost:5017
+
+
+```
+## Ejecución de frontend
+
+# 1 Backend – Microservicios
+
+# Products Service (puerto 5000)
+```bash
+cd frontend/angular18/inventory-web/
+npm install
+npm start
+
+
+
+```
 ## Evidencias 
 
 ## • Listado dinámico de productos y transacciones con paginación.
