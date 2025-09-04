@@ -41,7 +41,7 @@ dotnet run --project backend/netcore8/products/Products.Api --urls http://localh
 
 
 ```
-### Transaction Service (puerto 5000)
+### Transaction Service (puerto 5017)
 ```bash
 dotnet run --project backend/netcore8/transactions/Transactions.Api --urls http://localhost:5017
 
