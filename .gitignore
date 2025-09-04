@@ -1,0 +1,37 @@
+# ===============================
+# inventory-app scoped ignores
+# ===============================
+
+# --- OS junk ---
+/inventory-app/**/.DS_Store
+/inventory-app/**/Thumbs.db
+
+# --- Logs ---
+/inventory-app/**/*.log
+/inventory-app/**/npm-debug.log*
+/inventory-app/**/yarn-debug.log*
+/inventory-app/**/yarn-error.log*
+
+# --- VS Code (guarda launch/tasks) ---
+/inventory-app/.vscode/*
+!/inventory-app/.vscode/launch.json
+!/inventory-app/.vscode/tasks.json
+
+# --- .NET artifacts ---
+/inventory-app/**/bin/
+/inventory-app/**/obj/
+/inventory-app/**/*.user
+/inventory-app/**/*.suo
+
+# --- Node / Angular ---
+/inventory-app/**/node_modules/
+/inventory-app/**/dist/
+/inventory-app/**/.angular/cache/
+
+# --- IDE misc ---
+/inventory-app/**/*.iml
+/inventory-app/**/.idea/
+
+# --- Docker env (si lo usas) ---
+/inventory-app/.env
+

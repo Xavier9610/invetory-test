@@ -1,0 +1,31 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Your_strong!Passw0rd"
+    ports:
+      - "11433:1433"            # <-- SOLO acá se publica el puerto
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    # platform: linux/amd64     # si usas Apple Silicon
+
+  db-init:
+    image: mcr.microsoft.com/mssql-tools:latest
+    container_name: sqlserver-db-init
+    depends_on:
+      - sqlserver
+    environment:
+      DB_HOST: "sqlserver"
+      DB_PORT: "1433"
+      DB_USER: "sa"
+      DB_PASSWORD: "Your_strong!Passw0rd"
+    volumes:
+      - ./db/scripts:/scripts:ro
+      - ./db/init:/init:ro
+    entrypoint: ["/bin/bash", "/init/init-db.sh"]
+    restart: "no"
+
+volumes:
+  sqlserver-data:

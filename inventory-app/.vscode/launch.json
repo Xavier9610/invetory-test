@@ -1,0 +1,43 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Products.Api",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build Products.Api",
+      "program": "${workspaceFolder}/backend/netcore8/products/Products.Api/bin/Debug/net8.0/Products.Api.dll",
+      "cwd": "${workspaceFolder}/backend/netcore8/products/Products.Api",
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://localhost:5000"
+      },
+      "stopAtEntry": false,
+      "justMyCode": true,
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "Now listening on:\\s+(https?://\\S+)"
+      }
+    },
+    {
+      "name": "Transactions.Api",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build Transactions.Api",
+      "program": "${workspaceFolder}/backend/netcore8/transactions/Transactions.Api/bin/Debug/net8.0/Transactions.Api.dll",
+      "cwd": "${workspaceFolder}/backend/netcore8/transactions/Transactions.Api",
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://localhost:5017"
+      },
+      "stopAtEntry": false,
+      "justMyCode": true
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Both APIs",
+      "configurations": ["Products.Api", "Transactions.Api"]
+    }
+  ]
+}
